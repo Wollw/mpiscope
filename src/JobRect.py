@@ -17,8 +17,8 @@ class JobRect:
 
 # Create a hex color value from a value
 def _hexColor(x):
-    hex = int(hashlib.md5(x).hexdigest(), 16)
-    return ( (hex % 0xffffff & 0xff0000) >> 16
-           , (hex % 0xffffff & 0x00ff00) >> 8
-           , (hex % 0xffffff & 0x0000ff)
+    hex = int(hashlib.md5(x).hexdigest(), 16) % 0xffffff
+    return ( hex >> 16
+           , hex >> 8  & 0xff
+           , hex       & 0xff
            )
