@@ -13,7 +13,6 @@ class JobRect:
         self.height = int(job.wallrequest)
         self.posX = random.randrange(0,100)
         self.posY = 0
-        print(self.color)
 
 # Create a hex color value from a value
 def _hexColor(x):
