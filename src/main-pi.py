@@ -17,6 +17,12 @@ data = json.loads(jsonStr)["jobs"]
 jobrect = JobRect(Job(data[0]))
 
 
+#
+# encapsulates the pygame configuration and game logic
+#
+# based on an example from adafruit at:
+# http://learn.adafruit.com/pi-video-output-using-pygame/pointing-pygame-to-the-framebuffer
+#
 class pyscope :
     screen = None;
     
