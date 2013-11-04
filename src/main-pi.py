@@ -12,7 +12,6 @@ from JobRect import JobRect
 white = (255,255,255)
 black = (0,0,0)
 
-
 #
 # encapsulates the pygame configuration and game logic
 #
@@ -70,25 +69,20 @@ class pyscope :
         jsonStr = infile.read()
         data = json.loads(jsonStr)["jobs"]
 
-        jobs = [(JobRect(Job(d)), self.jobRectToRect(JobRect(Job(d)))) for d in data]
-
-        jobrect, rect = jobs[2]
+        # Create job rectangles
+        jobs = [JobRect(self, Job(d)) for d in data]
 
         while 1:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     sys.exit()
             self.screen.fill(black)
-            for (j, r) in jobs:
-                pygame.draw.rect(self.screen, j.color, r)
-                pygame.draw.rect(self.screen, white, r, 1)
-            pygame.display.flip()
 
-    def jobRectToRect(self, jrect):
-        width = jrect.width
-        height = jrect.height / 500.0
-        posX = (jrect.posX / 100.0) * self.width + width / 2
-        posY = jrect.posY + (self.height / 2.0) - (height / 2.0)
-        return pygame.Rect(posX, posY, width, height)
+            # Draw each job rectangle
+            for j in jobs:
+                pygame.draw.rect(self.screen, j.color, j.rect)
+                pygame.draw.rect(self.screen, white, j.rect, 1)
+
+            pygame.display.flip()
 
 pyscope().run()
