@@ -7,7 +7,7 @@ from Job import Job
 from JobRect import JobRect
 
 pygame.init()
-width, height = 720, 480
+width, height = 640, 480
 size = width, height
 
 # get a job's data for testing
