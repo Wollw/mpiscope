@@ -18,10 +18,10 @@ class JobRect:
 
 # Create a hex color value from a value
 def _hexColor(x):
-    hex = int(hashlib.md5(x).hexdigest(), 16) % 0xffffff
-    return ( hex >> 16
-           , hex >> 8  & 0xff
-           , hex       & 0xff
+    hexVal = int(hashlib.md5(x).hexdigest(), 16) % 0xffffff
+    return ( hexVal >> 16
+           , hexVal >> 8  & 0xff
+           , hexVal       & 0xff
            )
 
 def _jobRectToRect(pyscope, jrect):

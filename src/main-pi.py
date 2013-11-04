@@ -4,13 +4,8 @@ import pygame
 import time
 import random
 import sys
-import json
 
-from Job import Job
-from JobRect import JobRect
-
-white = (255,255,255)
-black = (0,0,0)
+import Renderer
 
 #
 # encapsulates the pygame configuration and game logic
@@ -63,26 +58,6 @@ class pyscope :
     def __del__(self):
         "Destructor to make sure pygame shuts down, etc."
 
-    def run(self):
-        # get a job's data for testing
-        infile = open("data/dataV.json", 'r')
-        jsonStr = infile.read()
-        data = json.loads(jsonStr)["jobs"]
-
-        # Create job rectangles
-        jobs = [JobRect(self, Job(d)) for d in data]
-
-        while 1:
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    sys.exit()
-            self.screen.fill(black)
-
-            # Draw each job rectangle
-            for j in jobs:
-                pygame.draw.rect(self.screen, j.color, j.rect)
-                pygame.draw.rect(self.screen, white, j.rect, 1)
-
-            pygame.display.flip()
+    def run(self): Renderer.run(self)
 
 pyscope().run()
