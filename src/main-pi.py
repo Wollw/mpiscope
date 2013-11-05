@@ -5,7 +5,7 @@ import time
 import random
 import sys
 
-import Renderer
+import renderer
 
 #
 # encapsulates the pygame configuration and game logic
@@ -58,6 +58,6 @@ class pyscope :
     def __del__(self):
         "Destructor to make sure pygame shuts down, etc."
 
-    def run(self): Renderer.run(self)
+    def run(self): renderer.run(self)
 
 pyscope().run()
