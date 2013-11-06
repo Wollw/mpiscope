@@ -9,7 +9,7 @@ class JobRect:
     # Takes a Job to create a JobRect from
     def __init__(self, pyscope, job):
         self.state  = job.state
-        self.color  = _hexColor(job.owner)
+        self.color  = _hexColor(self.state, job.owner)
         self.width  = int(job.core_count)
         self.height = int(job.wallrequest)
         self.posX = random.randrange(0,100)
@@ -17,12 +17,18 @@ class JobRect:
         self.rect = _jobRectToRect(pyscope, self)
 
 # Create a hex color value from a value
-def _hexColor(x):
-    hexVal = int(hashlib.md5(x).hexdigest(), 16) % 0xffffff
-    return ( hexVal >> 16
-           , hexVal >> 8  & 0xff
-           , hexVal       & 0xff
-           )
+def _hexColor(state, user):
+    hexVal = int(hashlib.md5(user).hexdigest(), 16) % 0xffffff
+    (r,g,b) = ( (hexVal >> 16) / 2.0
+              , (hexVal >> 8 & 0xff) / 2.0
+              , (hexVal & 0xff) / 2.0
+              )
+    if state == 'Q':
+        return (r,g,b)
+    elif state == 'R':
+        return (r+128, g+128, b+128)
+    else:
+        return (0,0,0)
 
 def _jobRectToRect(pyscope, jrect):
     width = jrect.width
