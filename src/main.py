@@ -2,29 +2,21 @@
 import pygame
 import sys
 import json
+import renderer
 
-from Job import Job
-from JobRect import JobRect
+from job import Job
+from jobrect import JobRect
+
+class PyScope:
+    def __init__(self,width,height,screen):
+        self.width = width
+        self.height = height
+        self.screen = screen
 
 pygame.init()
 width, height = 640, 480
 size = width, height
-
-# get a job's data for testing
-infile = open("data/dataV.json", 'r')
-jsonStr = infile.read()
-data = json.loads(jsonStr)["jobs"]
-jobrect = JobRect(Job(data[0]))
-
 screen = pygame.display.set_mode(size)
-rect = pygame.Rect( (jobrect.posX / 100.0) * width + jobrect.width / 2, 
-                    jobrect.posY,
-                    jobrect.width, jobrect.height)
+pyscope = PyScope(width, height, screen)
 
-while 1:
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            sys.exit()
-    screen.fill((15,15,15))
-    pygame.draw.rect(screen, jobrect.color, rect)
-    pygame.display.flip()
+renderer.run(pyscope)
