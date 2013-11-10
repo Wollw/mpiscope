@@ -16,6 +16,8 @@ def run(pyscope):
     infile = open("data/dataV.json", 'r')
     jsonStr = infile.read()
     data = json.loads(jsonStr)["jobs"]
+    
+    pyscope.processCount = comm.Get_size()
 
     # Create job rectangles
     jobs = [JobRect(pyscope, Job(d)) for d in data]
@@ -23,17 +25,19 @@ def run(pyscope):
     while 1:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                sys.exit()
+                comm.allgather(False)
+                print("quitting...")
+                exit(0)
         pyscope.screen.fill(black)
 
         # Draw each job rectangle
         for j in jobs:
-            pygame.draw.rect(pyscope.screen, j.color, j.rect)
-            pygame.draw.rect(pyscope.screen, white, j.rect, 1)
+            pygame.draw.rect(pyscope.screen, j.color, j.rect.move(-pyscope.width * rank, 0))
+            pygame.draw.rect(pyscope.screen, white, j.rect.move(-pyscope.width * rank, 0), 1)
 
         # wait for other processes and then display
         flags = comm.allgather(True)
         if not(all(flags)):
-            print("Gathered a False from a process... quitting.")
-            exit(1)
+            print("quitting...")
+            exit(0)
         pygame.display.flip()

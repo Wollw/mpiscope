@@ -10,9 +10,10 @@ class JobRect:
     def __init__(self, pyscope, job):
         self.state  = job.state
         self.color  = _hexColor(self.state, job.owner)
-        self.width  = int(job.core_count)
+        self.width  = int(job.core_count) * pyscope.processCount
         self.height = int(job.wallrequest)
-        self.posX = random.randrange(0,100)
+        #self.posX = random.randrange(0,100)
+        self.posX = int(hashlib.md5(job.id).hexdigest(), 16) % 100
         self.posY = 0
         self.rect = _jobRectToRect(pyscope, self)
 
@@ -35,5 +36,5 @@ def _jobRectToRect(pyscope, jrect):
     height = jrect.height / 500.0
     posX = (jrect.posX / 100.0) * pyscope.width + width / 2
     posY = jrect.posY + (pyscope.height / 2.0) - (height / 2.0)
-    return pygame.Rect(posX, posY, width, height)
+    return pygame.Rect(posX * pyscope.processCount, posY, width, height)
 
