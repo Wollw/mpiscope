@@ -3,6 +3,10 @@ import json
 import sys
 from jobrect import JobRect
 from job import Job
+from mpi4py import MPI
+
+comm = MPI.COMM_WORLD
+rank = comm.Get_rank()
 
 white = (255,255,255)
 black = (0,0,0)
@@ -27,4 +31,9 @@ def run(pyscope):
             pygame.draw.rect(pyscope.screen, j.color, j.rect)
             pygame.draw.rect(pyscope.screen, white, j.rect, 1)
 
+        # wait for other processes and then display
+        flags = comm.allgather(True)
+        if not(all(flags)):
+            print("Gathered a False from a process... quitting.")
+            exit(1)
         pygame.display.flip()

@@ -7,6 +7,8 @@ import renderer
 from job import Job
 from jobrect import JobRect
 
+from mpi4py import MPI
+
 class PyScope:
     def __init__(self,width,height,screen):
         self.width = width
