@@ -1,1 +1,1 @@
-mpirun -np 2 python2 src/main.py
+mpirun -np 3 python2 src/main.py
