@@ -13,7 +13,7 @@ class PyScope:
         self.screen = screen
 
 pygame.init()
-width, height = 640, 480
+width, height = 320, 240
 size = width, height
 screen = pygame.display.set_mode(size)
 pyscope = PyScope(width, height, screen)

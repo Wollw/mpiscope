@@ -8,33 +8,28 @@ import pygame
 class JobRect:
     # Takes a Job to create a JobRect from
     def __init__(self, pyscope, job):
-        self.state  = job["job_state"]
-        self.color  = _hexColor(self.state, job["job_owner"])
-        self.width  = int(int(job["ppn"]) * int(job["nodect"])) * pyscope.processCount
-        self.height = int(job["walltime_req"])
-        #self.posX = random.randrange(0,100)
-        self.posX = int(hashlib.md5(job["job_id"]).hexdigest(), 16) % 100
-        self.posY = 0
-        self.rect = _jobRectToRect(pyscope, self)
+        self.color  = _hexColor(job["job_owner"])
+        self.width  = 8
+        self.reqRect  = _jobRectToRect(pyscope, int(job["walltime_req"]), job, self)
+        self.usedRect = _jobRectToRect(pyscope, int(job["walltime_used"]), job, self)
 
 # Create a hex color value from a value
-def _hexColor(state, user):
+def _hexColor(user):
     hexVal = int(hashlib.md5(user).hexdigest(), 16) % 0xffffff
-    (r,g,b) = ( (hexVal >> 16) / 2.0
-              , (hexVal >> 8 & 0xff) / 2.0
-              , (hexVal & 0xff) / 2.0
+    (r,g,b) = ( (hexVal >> 16)
+              , (hexVal >> 8 & 0xff)
+              , (hexVal & 0xff)
               )
-    if state == 'Q':
-        return (r,g,b)
-    elif state == 'R':
-        return (r+128, g+128, b+128)
-    else:
-        return (0,0,0)
+    return (r,g,b)
 
-def _jobRectToRect(pyscope, jrect):
+def _jobRectToRect(pyscope, height, job, jrect):
+    global count
+    rand = random.randrange(0,pyscope.processCount * pyscope.width)
     width = jrect.width
-    height = jrect.height / 500.0
-    posX = (jrect.posX / 100.0) * pyscope.width + width / 2
-    posY = jrect.posY + (pyscope.height / 2.0) - (height / 2.0)
+    height = height / 1000.0
+    if not job["job_id"] in pyscope.jobPositions:
+        pyscope.jobPositions[job["job_id"]] = pyscope.comm.allgather(rand)[0]
+    posX = pyscope.jobPositions[job["job_id"]]
+    posY = pyscope.height - height
     return pygame.Rect(posX * pyscope.processCount, posY, width, height)
 
