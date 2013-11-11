@@ -8,12 +8,12 @@ import pygame
 class JobRect:
     # Takes a Job to create a JobRect from
     def __init__(self, pyscope, job):
-        self.state  = job.state
-        self.color  = _hexColor(self.state, job.owner)
-        self.width  = int(job.core_count) * pyscope.processCount
-        self.height = int(job.wallrequest)
+        self.state  = job["job_state"]
+        self.color  = _hexColor(self.state, job["job_owner"])
+        self.width  = int(int(job["ppn"]) * int(job["nodect"])) * pyscope.processCount
+        self.height = int(job["walltime_req"])
         #self.posX = random.randrange(0,100)
-        self.posX = int(hashlib.md5(job.id).hexdigest(), 16) % 100
+        self.posX = int(hashlib.md5(job["job_id"]).hexdigest(), 16) % 100
         self.posY = 0
         self.rect = _jobRectToRect(pyscope, self)
 

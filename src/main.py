@@ -4,9 +4,6 @@ import sys
 import json
 import renderer
 
-from job import Job
-from jobrect import JobRect
-
 from mpi4py import MPI
 
 class PyScope:
