@@ -52,13 +52,13 @@ def run(pyscope):
     fetchThread = FetchThread(lock)
     fetchThread.start()
 
+    lines = [pyscope.height - pyscope.log(x * 500000) for x in range(2,100)]
+
     # setup the screen id text
     fontObj = pygame.font.Font("freesansbold.ttf",12)
     textSurf = fontObj.render("%d"%rank, True, white, black)
     textRect = textSurf.get_rect()
     textRect.center = (25,25)
-
-    lines = [pyscope.height - pyscope.log(x * 500000) for x in range(2,100)]
 
     # wait for job list to actually fill
     while 1:
@@ -66,8 +66,10 @@ def run(pyscope):
         if fetchThread.jobs != []:
             lock.release()
             break
-        lock.release()
+        else:
+            lock.release()
 
+    # main render loop
     while 1:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:

@@ -10,7 +10,7 @@ class JobRect:
     # Takes a Job to create a JobRect from
     def __init__(self, pyscope, job):
         self.color  = _hexColor(job["job_owner"])
-        self.width  = 8
+        self.width  = int(job["ppn"]) * int(job["nodect"])
         self.reqRect  = _jobRectToRect(pyscope, int(job["walltime_req"]), job, self)
         self.usedRect = _jobRectToRect(pyscope, int(job["walltime_used"]), job, self)
 
