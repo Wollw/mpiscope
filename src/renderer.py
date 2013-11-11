@@ -5,6 +5,7 @@ import urllib2
 import time
 import threading
 import sys
+import numpy
 from jobrect import JobRect
 from mpi4py import MPI
 
@@ -13,6 +14,8 @@ rank = comm.Get_rank()
 
 white = (255,255,255)
 black = (0,0,0)
+grey = (128,128,128)
+darkgrey = (0x22,0x22,0x22)
 
 class FetchThread(threading.Thread):
     def __init__(self, lock):
@@ -42,6 +45,7 @@ def run(pyscope):
     pyscope.comm = comm
     pyscope.rank = rank
     pyscope.jobPositions = {}
+    pyscope.log = lambda x: 20*numpy.log(x)/numpy.log(2)
 
     lock = threading.Lock()
     thread = FetchThread(lock)
@@ -56,21 +60,25 @@ def run(pyscope):
     textRect = textSurf.get_rect()
     textRect.center = (25,25)
 
+    lines = [pyscope.height - pyscope.log(x * 500000) for x in range(1,100)]
+
     while 1:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 sys.exit()
-        pyscope.screen.fill(black)
+        pyscope.screen.fill(darkgrey)
+
 
         # Draw each job rectangle
         lock.acquire()
         jobs = thread.jobs
         lock.release()
+        [pygame.draw.line(pyscope.screen, white, (0, y), (pyscope.width, y), 1) for y in lines]
         for j in jobs:
             if "walltime_used" in j:
 
                 jobRect = JobRect(pyscope, j)
-                pygame.draw.rect(pyscope.screen, (128,128,128), jobRect.reqRect.move(-pyscope.width * rank, 0))
+                pygame.draw.rect(pyscope.screen, grey, jobRect.reqRect.move(-pyscope.width * rank, 0))
                 pygame.draw.rect(pyscope.screen, jobRect.color, jobRect.usedRect.move(-pyscope.width * rank, 0))
 
         pyscope.screen.blit(textSurf, textRect)

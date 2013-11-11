@@ -4,6 +4,7 @@
 import hashlib
 import random
 import pygame
+import numpy
 
 class JobRect:
     # Takes a Job to create a JobRect from
@@ -26,7 +27,7 @@ def _jobRectToRect(pyscope, height, job, jrect):
     global count
     rand = random.randrange(0,pyscope.processCount * pyscope.width)
     width = jrect.width
-    height = height / 1000.0
+    height = pyscope.log(height)
     if not job["job_id"] in pyscope.jobPositions:
         pyscope.jobPositions[job["job_id"]] = pyscope.comm.allgather(rand)[0]
     posX = pyscope.jobPositions[job["job_id"]]
