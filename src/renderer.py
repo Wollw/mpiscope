@@ -65,7 +65,7 @@ def run(pyscope):
     while 1:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                sys.exit()
+                exit(0)
         pyscope.screen.fill(darkgrey)
 
 
@@ -84,4 +84,5 @@ def run(pyscope):
         pyscope.screen.blit(textSurf, textRect)
 
         # wait for other processes and then display
+        comm.barrier()
         pygame.display.flip()

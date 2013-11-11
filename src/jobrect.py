@@ -25,11 +25,15 @@ def _hexColor(user):
 
 def _jobRectToRect(pyscope, height, job, jrect):
     global count
-    rand = random.randrange(0,pyscope.processCount * pyscope.width)
     width = jrect.width
     height = pyscope.log(height)
     if not job["job_id"] in pyscope.jobPositions:
-        pyscope.jobPositions[job["job_id"]] = pyscope.comm.allgather(rand)[0]
+        if pyscope.rank == 0:
+            rand = random.randrange(0,pyscope.processCount * pyscope.width)
+            [pyscope.comm.send(rand, dest=r, tag=1) for r in range(1, pyscope.processCount)]
+        else:
+            rand = pyscope.comm.recv(source=0, tag=1)
+        pyscope.jobPositions[job["job_id"]] = rand
     posX = pyscope.jobPositions[job["job_id"]]
     posY = pyscope.height - height
     return pygame.Rect(posX * pyscope.processCount, posY, width, height)
