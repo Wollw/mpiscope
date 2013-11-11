@@ -1,4 +1,5 @@
 import pygame
+import copy
 import json
 import random
 import urllib2
@@ -29,8 +30,8 @@ class FetchThread(threading.Thread):
             print("fetching...")
             req  = urllib2.urlopen("http://sentinel.sdsc.edu/data/jobs/gordon")
             jsonStr = "".join(req.readlines())
-            jobsold = self.jobs
             with self.lock:
+                jobsold = self.jobs
                 self.jobs = json.loads(jsonStr)["jobs"]
                 self.jobs.sort(cmp = lambda x,y: cmp(y["walltime_req"],x["walltime_req"]))
                 if jobsold != self.jobs:
@@ -48,8 +49,8 @@ def run(pyscope):
     pyscope.log = lambda x: 20*numpy.log(x)/numpy.log(2)
 
     lock = threading.Lock()
-    thread = FetchThread(lock)
-    thread.start()
+    fetchThread = FetchThread(lock)
+    fetchThread.start()
 
     # Create job rectangles
     #jobRects = [JobRect(pyscope, j) for j in jobs]
@@ -60,7 +61,7 @@ def run(pyscope):
     textRect = textSurf.get_rect()
     textRect.center = (25,25)
 
-    lines = [pyscope.height - pyscope.log(x * 500000) for x in range(1,100)]
+    lines = [pyscope.height - pyscope.log(x * 500000) for x in range(2,100)]
 
     while 1:
         for event in pygame.event.get():
@@ -71,12 +72,11 @@ def run(pyscope):
 
         # Draw each job rectangle
         lock.acquire()
-        jobs = thread.jobs
+        jobs = copy.deepcopy(fetchThread.jobs)
         lock.release()
         [pygame.draw.line(pyscope.screen, white, (0, y), (pyscope.width, y), 1) for y in lines]
         for j in jobs:
             if "walltime_used" in j:
-
                 jobRect = JobRect(pyscope, j)
                 pygame.draw.rect(pyscope.screen, grey, jobRect.reqRect.move(-pyscope.width * rank, 0))
                 pygame.draw.rect(pyscope.screen, jobRect.color, jobRect.usedRect.move(-pyscope.width * rank, 0))
