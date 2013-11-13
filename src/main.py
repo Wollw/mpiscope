@@ -61,11 +61,14 @@ class UpdateThread(threading.Thread):
                        }
 
             with self.lock:
+                oldData = self.jobData
                 self.jobData = { name: json.loads(jstr)
                                for name, jstr
                                in jsonStrs.iteritems()
-                            }
-                self._updated = True
+                               }
+                if self.jobData != oldData:
+                    self._updated = True
+
             time.sleep(self.delay)
 
     def updated(self):
