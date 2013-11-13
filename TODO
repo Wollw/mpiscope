@@ -1,0 +1,2 @@
+* Fix speed issues with deepcopy of all job data
+* ensure all processes get the same data from the servers
