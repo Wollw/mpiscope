@@ -37,8 +37,6 @@ class FetchThread(threading.Thread):
                 if jobsold != self.jobs:
                     print("new data")
             time.sleep(60)
-            
-
 
 def run(pyscope):
     # get a job's data for testing
@@ -73,6 +71,8 @@ def run(pyscope):
     while 1:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
+                comm.allgather(False)
+                pygame.quit()
                 exit(0)
         pyscope.screen.fill(darkgrey)
 
@@ -91,5 +91,8 @@ def run(pyscope):
         pyscope.screen.blit(textSurf, textRect)
 
         # wait for other processes and then display
-        comm.barrier()
+        #comm.barrier()
+        if not all(comm.allgather(True)):
+            pygame.quit()
+            exit(0)
         pygame.display.flip()
