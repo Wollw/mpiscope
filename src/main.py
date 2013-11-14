@@ -1,5 +1,3 @@
-#!/usr/bin/env python2
-
 from mpiscope import MPIScope
 from dummyrenderer import DummyRenderer
 
