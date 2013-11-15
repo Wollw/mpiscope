@@ -6,7 +6,7 @@ setup(
     author='David E. Shere',
     author_email='david.e.shere@gmail.com',
     packages=['mpiscope'],
-    scripts=['bin/example.py'],
+    scripts=['bin/run.sh', 'bin/example.py'],
     #url=[''],
     license="LICENSE.txt",
     description='Provides a context for MPI based graphics programs.',
