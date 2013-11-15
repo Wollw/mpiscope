@@ -98,18 +98,20 @@ class UpdateThread(threading.Thread):
                        for name, req
                        in requests.iteritems()
                        }
-            else:
-                jsonStrs = None
 
-            jsonStrs = self.comm.bcast(jsonStrs)
+                newJobData = { name: json.loads(jstr)
+                             for name, jstr
+                             in jsonStrs.iteritems()
+                             }
+            else:
+                newJobData = None
+
+            newJobData = self.comm.bcast(newJobData)
 
             # Store the new data
             with self.lock:
                 oldData = self.jobData
-                self.jobData = { name: json.loads(jstr)
-                               for name, jstr
-                               in jsonStrs.iteritems()
-                               }
+                self.jobData = newJobData
                 if self.jobData != oldData:
                     self._updated = True
 
