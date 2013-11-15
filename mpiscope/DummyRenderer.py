@@ -11,17 +11,22 @@ class DummyRenderer:
         for MPIScope.
     """
 
-    def init(self):
+    def __init__(self):
+        """Any initialization goes here
+        """
+        return
+
+    def start(self):
         """Do any initialization required
         """
-        print("init")
+        return
 
     def draw(self, jobData):
         """Do any drawing you want displayed.
            This method is only called when the
            UpdateThread actually has data (IE: is not None)
         """
-        print("draw")
+        return
 
     def flip(self):
         """Do anything that needs to happen after drawing.

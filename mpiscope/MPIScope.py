@@ -44,7 +44,7 @@ class MPIScope:
         """ Start up and run the renderer and updateThread.
         """
         self.updateThread.start()
-        self.renderer.init()
+        self.renderer.start()
         while 1:
             if self.updateThread.updated():
                 with self.lock:
