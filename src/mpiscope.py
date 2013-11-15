@@ -24,7 +24,7 @@ class MPIScope:
 
     """
 
-    def __init__(self, renderer, urlList):
+    def __init__(self, renderer, urlList, delay = 60):
         """Initialize MPI and the UpdateThread and store the renderer
 
         Args:
@@ -38,7 +38,7 @@ class MPIScope:
         self.renderer = renderer
 
         self.lock = threading.Lock()
-        self.updateThread = UpdateThread(self.lock, urlList)
+        self.updateThread = UpdateThread(self.lock, urlList, delay)
         
     def run(self):
         """ Start up and run the renderer and updateThread.
