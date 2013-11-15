@@ -1,5 +1,5 @@
 from mpiscope import MPIScope
-from dummyrenderer import DummyRenderer
+from mpiscope import DummyRenderer
 
 urlList = { "gordon"   : "http://sentinel.sdsc.edu/data/jobs/gordon"
           , "tscc"     : "http://sentinel.sdsc.edu/data/jobs/tscc"
