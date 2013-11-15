@@ -72,7 +72,6 @@ class UpdateThread(threading.Thread):
                 delay (int): The number of seconds to wait between fetches.
 
         """
-
         threading.Thread.__init__(self)
         self.status = -1
         self.lock = lock
@@ -80,21 +79,31 @@ class UpdateThread(threading.Thread):
         self.urlList = urlList
         self.delay = delay
         self._updated = True
+        self.comm = MPI.COMM_WORLD.Clone()
 
     def run(self):
         """ Start fetching data from the urls.
         """
         while 1:
-            requests = { name: urllib2.urlopen(url)
+            # Fetch and distribute data
+            if self.comm.rank == 0:
+                requests = {
+                       name: urllib2.urlopen(url)
                        for name, url
                        in self.urlList.iteritems()
                        }
 
-            jsonStrs = { name: "".join(req.readlines())
+                jsonStrs = {
+                       name: "".join(req.readlines())
                        for name, req
                        in requests.iteritems()
                        }
+            else:
+                jsonStrs = None
 
+            jsonStrs = self.comm.bcast(jsonStrs)
+
+            # Store the new data
             with self.lock:
                 oldData = self.jobData
                 self.jobData = { name: json.loads(jstr)
