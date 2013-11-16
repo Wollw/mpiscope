@@ -38,7 +38,12 @@ class MPIScope:
         self.renderer = renderer
 
         self.lock = threading.Lock()
-        self.updateThread = UpdateThread(self.lock, urlList, delay)
+        if hasattr(renderer, 'parseFunc'):
+            self.updateThread = UpdateThread(
+                                    self.lock, urlList, delay,
+                                    renderer.parseFunc)
+        else:
+            self.updateThread = UpdateThread( self.lock, urlList, delay)
         
     def run(self):
         """ Start up and run the renderer and updateThread.
@@ -50,6 +55,7 @@ class MPIScope:
                 with self.lock:
                     jobData = copy.deepcopy(self.updateThread.jobData)
             if jobData != None:
+                print(jobData)
                 self.renderer.draw(jobData)
             self.comm.barrier()
             self.renderer.flip()
@@ -60,7 +66,7 @@ class UpdateThread(threading.Thread):
 
     """
 
-    def __init__(self, lock, urlList, delay=60):
+    def __init__(self, lock, urlList, delay=60, parseFunc=None):
         """ Initialize the thread and prepare it for reading and
             storing the data from the urlList urls.
 
@@ -80,6 +86,7 @@ class UpdateThread(threading.Thread):
         self.delay = delay
         self._updated = True
         self.comm = MPI.COMM_WORLD.Clone()
+        self.parseFunc = parseFunc
 
     def run(self):
         """ Start fetching data from the urls.
@@ -103,6 +110,8 @@ class UpdateThread(threading.Thread):
                              for name, jstr
                              in jsonStrs.iteritems()
                              }
+                if self.parseFunc != None:
+                    newJobData = self.parseFunc(newJobData)
             else:
                 newJobData = None
 
