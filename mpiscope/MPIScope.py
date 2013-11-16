@@ -55,7 +55,6 @@ class MPIScope:
                 with self.lock:
                     jobData = copy.deepcopy(self.updateThread.jobData)
             if jobData != None:
-                print(jobData)
                 self.renderer.draw(jobData)
             self.comm.barrier()
             self.renderer.flip()
