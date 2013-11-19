@@ -25,7 +25,7 @@ class MPIScope:
     """
 
     def __init__(self, renderer, urlList, delay = 60):
-        """Initialize MPI and the UpdateThread and store the renderer
+        """Initialize MPI and the _UpdateThread and store the renderer
 
         Args:
             renderer (Renderer): An object used to display fetched data.
@@ -38,12 +38,12 @@ class MPIScope:
         self.renderer = renderer
 
         self.lock = threading.Lock()
-        if hasattr(renderer, 'parseFunc'):
-            self.updateThread = UpdateThread(
+        if hasattr(renderer, 'parser'):
+            self.updateThread = _UpdateThread(
                                     self.lock, urlList, delay,
-                                    renderer.parseFunc)
+                                    renderer.parser)
         else:
-            self.updateThread = UpdateThread( self.lock, urlList, delay)
+            self.updateThread = _UpdateThread( self.lock, urlList, delay)
         
     def run(self):
         """ Start up and run the renderer and updateThread.
@@ -59,13 +59,13 @@ class MPIScope:
             self.comm.barrier()
             self.renderer.flip()
 
-class UpdateThread(threading.Thread):
+class _UpdateThread(threading.Thread):
     """ This class is used to create a separate thread
         for fetching and presenting data that will be rendered.
 
     """
 
-    def __init__(self, lock, urlList, delay=60, parseFunc=None):
+    def __init__(self, lock, urlList, delay=60, parser=None):
         """ Initialize the thread and prepare it for reading and
             storing the data from the urlList urls.
 
@@ -85,7 +85,7 @@ class UpdateThread(threading.Thread):
         self.delay = delay
         self._updated = True
         self.comm = MPI.COMM_WORLD.Clone()
-        self.parseFunc = parseFunc
+        self.parser = parser
 
     def run(self):
         """ Start fetching data from the urls.
@@ -109,8 +109,8 @@ class UpdateThread(threading.Thread):
                              for name, jstr
                              in jsonStrs.iteritems()
                              }
-                if self.parseFunc != None:
-                    newJobData = self.parseFunc(newJobData)
+                if self.parser != None:
+                    newJobData = self.parser(newJobData)
             else:
                 newJobData = None
 
