@@ -21,7 +21,7 @@ class DummyRenderer:
         """
         return
 
-    def parser(self, data):
+    def parse(self, data):
         """Do something to the data
         """
         return data
