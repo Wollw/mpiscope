@@ -17,7 +17,10 @@ class DummyRenderer:
         return
 
     def start(self):
-        """Do any initialization required
+        """Do any further setup required to start rendering
+           that wasn't done in __init__. This is a delayed initialization
+           function so that things like a rendering window don't
+           open when this class is instantiated, but only when run.
         """
         return
 
