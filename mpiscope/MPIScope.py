@@ -24,13 +24,18 @@ class MPIScope:
 
     """
 
-    def __init__(self, renderer, urlList, delay = 60):
+    def __init__(self, renderer, urlList, parse=None, delay=60):
         """Initialize MPI and the _UpdateThread and store the renderer
 
         Args:
             renderer (Renderer): An object used to display fetched data.
             urlList ({str}): A dictionary of strings with names as keys.
-
+            parse: this optional parameter should be a function that transforms
+                   the fetched data from the servers into the format the
+                   renderer expects.  This function runs on the UpdateThread
+                   so it may be used to reduce the size of data before being
+                   copied to the main thread.
+            delay: The number of seconds to wait between data updates.
         """
 
         self.comm = MPI.COMM_WORLD
@@ -38,12 +43,7 @@ class MPIScope:
         self.renderer = renderer
 
         self.lock = threading.Lock()
-        if hasattr(renderer, 'parse'):
-            self.updateThread = _UpdateThread(
-                                    self.lock, urlList, delay,
-                                    renderer.parse)
-        else:
-            self.updateThread = _UpdateThread( self.lock, urlList, delay)
+        self.updateThread = _UpdateThread(self.lock, urlList, parse, delay)
         
     def run(self):
         """ Start up and run the renderer and updateThread.
@@ -65,7 +65,7 @@ class _UpdateThread(threading.Thread):
 
     """
 
-    def __init__(self, lock, urlList, delay=60, parse=None):
+    def __init__(self, lock, urlList, parse=None, delay=60):
         """ Initialize the thread and prepare it for reading and
             storing the data from the urlList urls.
 

@@ -24,11 +24,6 @@ class DummyRenderer:
         """
         return
 
-    def parse(self, data):
-        """Do something to the data
-        """
-        return data
-
     def draw(self, jobData):
         """Do any drawing you want displayed.
            This method is only called when the

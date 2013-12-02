@@ -6,5 +6,8 @@ urlList = { "gordon"   : "http://sentinel.sdsc.edu/data/jobs/gordon"
           , "trestles" : "http://sentinel.sdsc.edu/data/jobs/trestles"
           }
 
+#def parse(data):
+#    return data
+#mpiScope = MPIScope(DummyRenderer(), urlList, parse, delay=1)
 mpiScope = MPIScope(DummyRenderer(), urlList)
 mpiScope.run()
