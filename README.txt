@@ -2,7 +2,7 @@ Python Module: mpiscope
     Contains two user facing classes:
         mpiscope.MPIScope:
 
-            https://github.com/Wollw/sdsc-data-visualization/blob/master/mpiscope/MPIScope.py
+            https://github.com/Wollw/mpiscope/blob/master/mpiscope/MPIScope.py
 
             This is the main part of this module.  It is a class who's
             constructor takes a Renderer object and a list of URLs and
@@ -26,7 +26,7 @@ Python Module: mpiscope
 
         mpiscope.DummyRenderer:
 
-            https://github.com/Wollw/sdsc-data-visualization/blob/master/mpiscope/DummyRenderer.py
+            https://github.com/Wollw/mpiscope/blob/master/mpiscope/DummyRenderer.py
 
             This is just a simple example Renderer class that does nothing.
             The methods of interest are start, parser, draw, and flip.
