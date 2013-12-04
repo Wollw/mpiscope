@@ -14,6 +14,7 @@ class DummyRenderer:
     def __init__(self):
         """Any initialization goes here
         """
+        print("Renderer Initialization")
         return
 
     def start(self):
@@ -22,6 +23,7 @@ class DummyRenderer:
            function so that things like a rendering window don't
            open when this class is instantiated, but only when run.
         """
+        print("Renderer Start")
         return
 
     def draw(self, jobData):
@@ -29,10 +31,12 @@ class DummyRenderer:
            This method is only called when the
            UpdateThread actually has data (IE: is not None)
         """
+        print("Renderer Draw")
         return
 
     def flip(self):
         """Do anything that needs to happen after drawing.
            This method is run every tick even if there is no data.
         """
+        print("Renderer Flip")
         return
