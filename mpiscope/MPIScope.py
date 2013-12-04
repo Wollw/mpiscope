@@ -90,25 +90,35 @@ class _UpdateThread(threading.Thread):
     def run(self):
         """ Start fetching data from the urls.
         """
+
+        """ Attempts to retrieve data from
+            the server.  Retries several times
+            if it fails, and then returns either
+            the new data or None.
+        """
+        def retrieveData(url):
+            jobData = {}
+            tries = 3
+            while tries:
+                request = urllib2.urlopen(url)
+                dataStr = "".join(request.readlines())
+                jobData = json.loads(dataStr)
+                if not "jobs" in jobData:
+                    return json.loads(dataStr)
+                else:
+                    tries = tries - 1
+                    time.sleep(5)
+            return None
+
+
         while 1:
             # Fetch and distribute data
             if self.comm.rank == 0:
-                requests = {
-                       name: urllib2.urlopen(url)
-                       for name, url
-                       in self.urlList.iteritems()
-                       }
-
-                jsonStrs = {
-                       name: "".join(req.readlines())
-                       for name, req
-                       in requests.iteritems()
-                       }
-
-                newJobData = { name: json.loads(jstr)
-                             for name, jstr
-                             in jsonStrs.iteritems()
+                newJobData = { name: retrieveData(url)
+                             for name, url
+                             in self.urlList.iteritems()
                              }
+
                 if self.parse != None:
                     newJobData = self.parse(newJobData)
             else:
