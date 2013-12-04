@@ -103,7 +103,7 @@ class _UpdateThread(threading.Thread):
                 request = urllib2.urlopen(url)
                 dataStr = "".join(request.readlines())
                 jobData = json.loads(dataStr)
-                if not "jobs" in jobData:
+                if "jobs" in jobData:
                     return json.loads(dataStr)
                 else:
                     tries = tries - 1
