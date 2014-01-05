@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 
 if [[ $OSTYPE == darwin* ]]; then
-    PYTHON=python
+    PYTHON=python3;
     MPIRUN=openmpirun;
 else
-    PYTHON=python2
+    PYTHON=python3;
     MPIRUN=mpirun;
 fi
 

@@ -1,2 +1,2 @@
-from MPIScope import MPIScope
-from DummyRenderer import DummyRenderer
+from .MPIScope import MPIScope
+from .DummyRenderer import DummyRenderer

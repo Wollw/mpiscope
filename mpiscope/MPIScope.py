@@ -10,7 +10,7 @@ import copy
 import json
 import threading
 import time
-import urllib2
+import requests
 
 from mpi4py import MPI
 
@@ -100,31 +100,30 @@ class _UpdateThread(threading.Thread):
             jobData = {}
             tries = 3
             while tries:
-                request = urllib2.urlopen(url)
-                dataStr = "".join(request.readlines())
+                request = requests.get(url)
+                dataStr = str(request.text)
                 jobData = json.loads(dataStr)
                 if "jobs" in jobData:
-                    return json.loads(dataStr)
+                    return jobData
                 else:
                     tries = tries - 1
                     time.sleep(5)
             return None
 
-
         while 1:
             # Fetch and distribute data
-            if self.comm.rank == 0:
-                newJobData = { name: retrieveData(url)
-                             for name, url
-                             in self.urlList.iteritems()
-                             }
+            #if self.comm.rank == 0:
+            newJobData = { name: retrieveData(url)
+                         for name, url
+                         in list(self.urlList.items())
+                         }
 
-                if self.parse != None:
-                    newJobData = self.parse(newJobData)
-            else:
-                newJobData = None
+            if self.parse != None:
+                newJobData = self.parse(newJobData)
+            #else:
+            #    newJobData = None
 
-            newJobData = self.comm.bcast(newJobData)
+            #newJobData = self.comm.bcast(newJobData)
 
             # Store the new data
             with self.lock:
