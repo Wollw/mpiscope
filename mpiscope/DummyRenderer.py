@@ -26,7 +26,7 @@ class DummyRenderer:
         print("Renderer Start")
         return
 
-    def draw(self, jobData):
+    def draw(self, data):
         """Do any drawing you want displayed.
            This method is only called when the
            UpdateThread actually has data (IE: is not None)
